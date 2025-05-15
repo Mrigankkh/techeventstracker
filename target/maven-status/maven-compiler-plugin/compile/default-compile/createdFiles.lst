@@ -1,0 +1,6 @@
+com/techevents/controller/SubscriptionController.class
+com/techevents/repository/SubscriberRepository.class
+com/techevents/model/Subscriber.class
+com/techevents/service/SubscriptionService.class
+com/techevents/dto/SubscriptionRequest.class
+com/techevents/TechEventsApplication.class

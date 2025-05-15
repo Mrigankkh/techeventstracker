@@ -1,0 +1,7 @@
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/TechEventsApplication.java
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/controller/SubscriptionController.java
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/demo/DemoApplication.java
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/dto/SubscriptionRequest.java
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/model/Subscriber.java
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/repository/SubscriberRepository.java
+/Users/mrigank/techeventstracker/src/main/java/com/techevents/service/SubscriptionService.java
