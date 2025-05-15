@@ -1,0 +1,15 @@
++---------------------+          +---------------------------+
+|    Frontend (React) | <--->    |   Spring Boot API (EC2)   |
+|   (Hosted via S3 +  |          |   - REST API              |
+|    CloudFront/CDN)  |          |   - Kafka/RabbitMQ logic  |
++---------------------+          +---------------------------+
+                                     |
+                                     |
+                         +------------------------+
+                         | Kafka (MSK or self-host)|
+                         | RabbitMQ (EC2 or Fargate)|
+                         +------------------------+
+                                     |
+                         +------------------------+
+                         |  PostgreSQL (RDS)       |
+                         +------------------------+
