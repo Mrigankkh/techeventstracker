@@ -29,9 +29,12 @@ spring:
 
 app:
   rabbitmq:
-    queue: test.queue
-    exchange: test.exchange
-    routing-key: test.key
+    queue: events.saved.queue
+    exchange: events.saved.exchange
+    routing-key: events.saved.key
+    notification-exchange: notifications.exchange
+    notification-routing-key: notifications.event.created
+
   
 server:
   port: 8080
