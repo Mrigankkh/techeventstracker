@@ -8,12 +8,15 @@ public class NotificationMessage {
     private String eventTitle;
     private String eventDate;
     private String city;
+private String eventDescription;
 
     public NotificationMessage(String email, Event event) {
         this.email = email;
         this.eventTitle = event.getTitle();
         this.eventDate = event.getEventDate().toString(); 
         this.city = event.getCity();
+        this.eventDescription = event.getDescription();
+
     }
 
     // Getters (and setters if needed)
@@ -31,5 +34,8 @@ public class NotificationMessage {
 
     public String getCity() {
         return city;
+    }
+    public String getEventDescription() {
+        return eventDescription;
     }
 }
