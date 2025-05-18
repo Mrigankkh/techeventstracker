@@ -3,78 +3,73 @@ package com.techevents.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.techevents.model.Event;
-import com.techevents.repository.EventRepository;
+import com.techevents.service.EventIngestionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.dao.DataIntegrityViolationException;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EventConsumerUnitTest {
 
-    private EventRepository repo;
     private ObjectMapper mapper;
+    private EventIngestionService ingestionService;
     private EventConsumer consumer;
 
     @BeforeEach
     void setUp() {
-        repo = mock(EventRepository.class);
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        consumer = new EventConsumer(mapper, repo);
+        ingestionService = mock(EventIngestionService.class);
+        consumer = new EventConsumer(mapper, ingestionService);
     }
 
     @Test
-    void malformedJson_shouldNotSave_andLogError() {
-        String badJson = "{ not: 'json' ";
-        assertDoesNotThrow(() -> consumer.listen("t", 0, 0L, badJson));
-        verify(repo, never()).save(any());
+    void malformedJson_shouldNotCallService() {
+        String badJson = "{ this is not valid JSON";
+        consumer.listen("topic1", badJson);
+        verifyNoInteractions(ingestionService);
     }
 
     @Test
-    void missingFields_shouldNotSave_andLogWarn() {
-        String missing = """
+    void missingRequiredFields_shouldNotCallService() {
+        String missingFieldsJson = """
             {
-              "description":"no title/date",
-              "city":"Nowhere"
+              "description": "missing title and date",
+              "city": "X"
             }
-            """;
-        assertDoesNotThrow(() -> consumer.listen("t", 0, 0L, missing));
-        verify(repo, never()).save(any());
+        """;
+        consumer.listen("topic1", missingFieldsJson);
+        verifyNoInteractions(ingestionService);
     }
 
     @Test
-    void validJson_shouldSaveOnce() {
-        String valid = """
+    void validJson_shouldCallServiceWithEvent() {
+        String validJson = """
             {
-              "title":"UT Test",
-              "description":"desc",
-              "eventDate":"2025-05-18",
-              "city":"Here",
-              "tags":["a","b"]
+              "title": "Test Title",
+              "description": "desc",
+              "eventDate": "2025-06-01",
+              "city": "Test City",
+              "tags": ["tag1", "tag2"]
             }
-            """;
-        consumer.listen("t", 0, 0L, valid);
-        ArgumentCaptor<Event> cap = ArgumentCaptor.forClass(Event.class);
-        verify(repo, times(1)).save(cap.capture());
-        assertEquals("UT Test", cap.getValue().getTitle());
+        """;
+        consumer.listen("topic1", validJson);
+        verify(ingestionService, times(1)).ingest(any(Event.class));
     }
 
     @Test
-    void dbError_shouldPropagate_andLogError() {
-        String valid = """
+    void serviceThrowsException_shouldNotCrashConsumer() {
+        String validJson = """
             {
-              "title":"UT Test",
-              "description":"desc",
-              "eventDate":"2025-05-18",
-              "city":"Here",
-              "tags":["a","b"]
+              "title": "Test Title",
+              "description": "desc",
+              "eventDate": "2025-06-01",
+              "city": "Test City",
+              "tags": ["tag1", "tag2"]
             }
-            """;
-        doThrow(new DataIntegrityViolationException("fk fail"))
-            .when(repo).save(any());
-        assertThrows(DataIntegrityViolationException.class,
-                     () -> consumer.listen("t", 0, 0L, valid));
+        """;
+        doThrow(new RuntimeException("Simulated failure"))
+            .when(ingestionService).ingest(any());
+        assertDoesNotThrow(() -> consumer.listen("topic1", validJson));
     }
 }

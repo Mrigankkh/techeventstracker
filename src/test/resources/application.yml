@@ -19,3 +19,5 @@ app:
     queue: test.queue
     exchange: test.exchange
     routing-key: test.key
+    notification-exchange: notifications.exchange
+    notification-routing-key: notifications.event.created
