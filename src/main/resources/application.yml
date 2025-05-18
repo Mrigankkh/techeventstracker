@@ -19,5 +19,19 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     listener:
       missing-topics-fatal: false
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+
+app:
+  rabbitmq:
+    queue: test.queue
+    exchange: test.exchange
+    routing-key: test.key
+  
 server:
   port: 8080

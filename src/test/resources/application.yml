@@ -8,3 +8,14 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+app:
+  rabbitmq:
+    queue: test.queue
+    exchange: test.exchange
+    routing-key: test.key
