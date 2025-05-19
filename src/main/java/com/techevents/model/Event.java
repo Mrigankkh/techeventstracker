@@ -2,6 +2,7 @@ package com.techevents.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,11 +21,20 @@ public class Event {
 
     private String city;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @ElementCollection
     private List<String> tags;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     // Constructors
-    public Event() {}
+    public Event() {
+    }
 
     public Event(String title, String description, LocalDate eventDate, String city,
             List<String> tags) {
@@ -33,6 +43,7 @@ public class Event {
         this.eventDate = eventDate;
         this.city = city;
         this.tags = tags;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -59,6 +70,8 @@ public class Event {
         return tags;
     }
 
-
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
 }
