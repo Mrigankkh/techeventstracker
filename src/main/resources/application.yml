@@ -26,7 +26,6 @@ spring:
     username: guest
     password: guest
 
-
 app:
   rabbitmq:
     queue: events.saved.queue
@@ -34,6 +33,8 @@ app:
     routing-key: events.saved.key
     notification-exchange: notifications.exchange
     notification-routing-key: notifications.event.created
+    daily-summary-routing-key: notifications.event.daily-summary
+
 
   
 server:
